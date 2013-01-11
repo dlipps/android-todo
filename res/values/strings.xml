@@ -9,5 +9,6 @@
     <string name="erledigt">Erledigt</string>
     <string name="buttonSave">Speichern</string>
     <string name="buttonDelete">Löschen</string>
+    <string name="todoerstellen">TODO Erstellen</string>
 
 </resources>
