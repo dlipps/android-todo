@@ -31,7 +31,7 @@
         android:layout_alignBottom="@+id/todoall_itemFaelligkeit"
         android:layout_alignParentRight="true"
         android:layout_marginRight="16dp"
-        android:text="CheckBox" />
+        android:text="@string/erledigt" />
 
     <RatingBar
         android:id="@+id/todoall_itemratingBar"

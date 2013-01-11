@@ -7,5 +7,7 @@
     <string name="einloggen">Einloggen</string>
     <string name="wichtigkeit">Wichtigkeit:</string>
     <string name="erledigt">Erledigt</string>
+    <string name="buttonSave">Speichern</string>
+    <string name="buttonDelete">Löschen</string>
 
 </resources>

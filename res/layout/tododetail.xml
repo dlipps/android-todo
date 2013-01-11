@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/todoDetailLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,36 +9,50 @@
         android:id="@+id/nameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:ems="10"
         android:inputType="text" />
 
     <DatePicker
         android:id="@+id/datumpicker"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/nameEditText" />
 
     <TimePicker
-        android:id="@+id/timePicker1"
+        android:id="@+id/timePicker"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/datumpicker" />
 
     <CheckBox
         android:id="@+id/erledigtCheckBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/timePicker"
         android:text="@string/erledigt" />
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/erledigtCheckBox"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
         android:text="@string/wichtigkeit"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <RatingBar
         android:id="@+id/wichtigkeitBar"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
         android:numStars="5"
         android:stepSize="1" />
 
@@ -46,10 +60,31 @@
         android:id="@+id/beschreibung"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/wichtigkeitBar"
         android:ems="10"
         android:inputType="textMultiLine" >
 
         <requestFocus />
     </EditText>
 
-</LinearLayout>
+    <Button
+        android:id="@+id/buttonDelete"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/beschreibung"
+        android:text="@string/buttonDelete" />
+
+    <Button
+        android:id="@+id/buttonSave"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/buttonDelete"
+        android:layout_alignBottom="@+id/buttonDelete"
+        android:layout_alignParentRight="true"
+        android:text="@string/buttonSave" />
+
+</RelativeLayout>
