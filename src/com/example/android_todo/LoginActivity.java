@@ -1,13 +1,15 @@
 package com.example.android_todo;
 
+import java.util.regex.Pattern;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputFilter.LengthFilter;
-import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -15,7 +17,6 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -27,6 +28,8 @@ public class LoginActivity extends Activity {
 	private EditText passwordEdit;
 	private String email=null;
 	private String password=null;
+	private AlertDialog.Builder ad;
+	private Context context;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +46,13 @@ public class LoginActivity extends Activity {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
-					email = v.getText().toString();
-					System.out.println(email);
-					updateLoginButtonState();
+					String text=v.getText().toString();
+					if(validateEmail(text)){
+						email = text;
+						updateLoginButtonState();
+					}else{
+						
+					}
 					return false;
 				}
 				return false;
@@ -57,9 +64,14 @@ public class LoginActivity extends Activity {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
-					password = v.getText().toString();
-					System.out.println(password);
-					updateLoginButtonState();
+					String text=v.getText().toString();
+					if(text.length()==6){
+						password = text;
+						updateLoginButtonState();
+					}else{
+						
+					}
+					
 					return false;
 				}
 				return false;
@@ -74,6 +86,26 @@ public class LoginActivity extends Activity {
 				startActivity(new Intent(LoginActivity.this,TodoAllActivity.class));	
 			}
 		});
+        
+//        context = LoginActivity.this;
+//		String title = "";
+//		String message = "Es ist keine gültige Email-Adresse, geben Sie eine gültige Email-Adresse ein!";
+//		String button1String = "OK";
+//		
+//		ad = new AlertDialog.Builder(context);
+//		ad.setTitle(title); 
+//		ad.setMessage(message);
+//		ad.setPositiveButton(button1String, new OnClickListener() {
+//			public void onClick(DialogInterface dialog, int arg1) {
+//
+//			}
+//		});
+//
+//		ad.setCancelable(true);
+//		ad.setOnCancelListener(new OnCancelListener() {
+//			public void onCancel(DialogInterface dialog) {
+//			}
+//		});
 	}
 
 	@Override
@@ -85,6 +117,11 @@ public class LoginActivity extends Activity {
 	
 	private void updateLoginButtonState() {
 		loginButton.setEnabled(email != null && password !=null);
+	}
+	
+	private boolean validateEmail(String email) {
+	    Pattern pattern = Patterns.EMAIL_ADDRESS;
+	    return pattern.matcher(email).matches();
 	}
 
 }
