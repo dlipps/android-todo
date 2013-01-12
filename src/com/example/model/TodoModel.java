@@ -6,14 +6,14 @@ import java.util.Date;
 
 public class TodoModel implements Serializable{
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1095550755867932688L;
+
+	/**
 	 * some static id assignment
 	 */
 	private static int ID = 0;
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7481912314472891511L;
 
 	/**
 	 * the fields
@@ -22,11 +22,11 @@ public class TodoModel implements Serializable{
 	private String name;
 	private String description;
 	private Date faelligkeit;
-	private boolean erledigt;
-	private boolean favourite;
+	private int erledigt;
+	private int favourite;
 
 	public TodoModel(long id, String name, String description,
-			Date date, boolean erledigt, boolean favourite) {
+			Date date, int erledigt, int favourite) {
 		this.setId(id == -1 ? ID++ : id);
 		this.setName(name);
 		this.setDescription(description);
@@ -51,11 +51,11 @@ public class TodoModel implements Serializable{
 		return this.faelligkeit;
 	}
 	
-	public boolean getErledigt() {
+	public int getErledigt() {
 		return this.erledigt;
 	}
 	
-	public boolean getFavourite() {
+	public int getFavourite() {
 		return this.favourite;
 	}
 
@@ -79,11 +79,11 @@ public class TodoModel implements Serializable{
 		this.description = description;
 	}
 	
-	public void setErledigt(boolean erledigt) {
+	public void setErledigt(int erledigt) {
 		this.erledigt = erledigt;
 	}
 	
-	public void setFavourite(boolean favourite) {
+	public void setFavourite(int favourite) {
 		this.favourite = favourite;
 	}
 	
