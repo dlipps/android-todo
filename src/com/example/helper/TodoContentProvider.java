@@ -32,7 +32,7 @@ public class TodoContentProvider{
 	    dbHelper.close();
 	  }
 
-	  public TodoModel createTodo(TodoModel todo) {
+	  public void createTodo(TodoModel todo) {
 		    long insertId = database.insert(TodoSQLiteOpenHelper.TABLE_TODO, null,
 		    		createContentValues(todo));
 		    Cursor cursor = database.query(TodoSQLiteOpenHelper.TABLE_TODO,
@@ -41,7 +41,7 @@ public class TodoContentProvider{
 		    cursor.moveToFirst();
 		    TodoModel todomodel = cursorToDo(cursor);
 		    cursor.close();
-		    return todomodel;
+//		    return todomodel;
 	  }
 
 	  public void deleteTodo(TodoModel todo) {

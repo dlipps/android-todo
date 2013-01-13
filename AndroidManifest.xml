@@ -23,6 +23,8 @@
             </intent-filter>
         </activity>
         <activity android:name="TodoAllActivity"></activity>
+        <activity android:name="com.example.android_todo.TodoErstellenActivity"></activity>
+        <activity android:name="TodoDetailsActivity"></activity>
     </application>
 
 </manifest>

@@ -21,12 +21,12 @@ public class TodoSQLiteOpenHelper extends SQLiteOpenHelper {
 	private static final int DATABASE_VERSION = 1;
 
 	private static final String DATABASE_CREATE = "create table "
-	      + TABLE_TODO + "(" + COLUMN_ID
+	      + TABLE_TODO + " (" + COLUMN_ID
 	      + " integer primary key autoincrement, " + COLUMN_NAME
-	      + " text not null" + COLUMN_DESCRIPTION
-	      + " text"+ COLUMN_FAELLIGKEIT
-	      + " text not null"+ COLUMN_ERLEDIGT
-	      + " integer"+ COLUMN_FAVOURITE
+	      + " text not null, " + COLUMN_DESCRIPTION
+	      + " text, "+ COLUMN_FAELLIGKEIT
+	      + " text not null, "+ COLUMN_ERLEDIGT
+	      + " integer, "+ COLUMN_FAVOURITE
 	      + " integer);";
 
 	public  TodoSQLiteOpenHelper(Context context) {

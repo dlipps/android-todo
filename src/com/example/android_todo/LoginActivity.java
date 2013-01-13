@@ -26,10 +26,11 @@ public class LoginActivity extends Activity {
 	private Button loginButton;
 	private EditText emailEdit;
 	private EditText passwordEdit;
+	private TextView passwordFalsch;
+	private TextView emailFalsch;
 	private String email=null;
 	private String password=null;
-	private AlertDialog.Builder ad;
-	private Context context;
+//	private AlertDialog.Builder ad;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,19 +40,22 @@ public class LoginActivity extends Activity {
 		loginButton = (Button)findViewById(R.id.einloggenButton);
 		emailEdit =(EditText)findViewById(R.id.emailadresseEdit);
 		passwordEdit =(EditText)findViewById(R.id.passwordnumerischEdit);
-		
+		passwordFalsch=(TextView)findViewById(R.id.passwordFalsch);
+		emailFalsch=(TextView)findViewById(R.id.emailFalsch);
 		
 		emailEdit.setOnEditorActionListener(new OnEditorActionListener() {
 			
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				emailFalsch.setVisibility(View.INVISIBLE);
 				if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
 					String text=v.getText().toString();
 					if(validateEmail(text)){
 						email = text;
 						updateLoginButtonState();
 					}else{
-						
+//						ad.show();
+						emailFalsch.setVisibility(View.VISIBLE);
 					}
 					return false;
 				}
@@ -63,13 +67,14 @@ public class LoginActivity extends Activity {
 			
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				passwordFalsch.setVisibility(View.INVISIBLE);
 				if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
 					String text=v.getText().toString();
 					if(text.length()==6){
 						password = text;
 						updateLoginButtonState();
 					}else{
-						
+						passwordFalsch.setVisibility(View.VISIBLE);
 					}
 					
 					return false;
@@ -82,30 +87,28 @@ public class LoginActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				Log.i(TableLayout.class.getName(),"onClick(): " + v);
+//				Log.i(TableLayout.class.getName(),"onClick(): " + v);
 				startActivity(new Intent(LoginActivity.this,TodoAllActivity.class));	
 			}
 		});
         
-//        context = LoginActivity.this;
-//		String title = "";
+//		String title = "Falsche Email-Eingabe";
 //		String message = "Es ist keine gültige Email-Adresse, geben Sie eine gültige Email-Adresse ein!";
 //		String button1String = "OK";
+//
+//        ad = new AlertDialog.Builder(this);
+//		ad.setMessage(message)
+//		       .setTitle(title)
+//		       .setPositiveButton(button1String, new DialogInterface.OnClickListener()
+//		       {
 //		
-//		ad = new AlertDialog.Builder(context);
-//		ad.setTitle(title); 
-//		ad.setMessage(message);
-//		ad.setPositiveButton(button1String, new OnClickListener() {
-//			public void onClick(DialogInterface dialog, int arg1) {
-//
-//			}
-//		});
-//
-//		ad.setCancelable(true);
-//		ad.setOnCancelListener(new OnCancelListener() {
-//			public void onCancel(DialogInterface dialog) {
-//			}
-//		});
+//				@Override
+//				public void onClick(DialogInterface dialog, int which) {
+////					emailEdit.setText("");
+//					dialog.dismiss();					
+//				}
+//		    	   
+//		       }).create();
 	}
 
 	@Override
