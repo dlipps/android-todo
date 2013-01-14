@@ -32,4 +32,5 @@ proguard/
 libs/
 proguard-project.txt
 project.properties
+.settings/
 
