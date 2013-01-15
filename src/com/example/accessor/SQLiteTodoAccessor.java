@@ -15,8 +15,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListAdapter;
-import android.widget.SimpleCursorAdapter;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.android_todo.R;
@@ -24,7 +27,7 @@ import com.example.model.TodoModel;
 
 public class SQLiteTodoAccessor implements ITodoListAccessor {
 	
-	private Activity activity;
+	protected Activity activity;
 	private static final String DBNAME = "todo.db";
 	private static final int INITIAL_DBVERSION = 0;
 
@@ -40,27 +43,19 @@ public class SQLiteTodoAccessor implements ITodoListAccessor {
 		      + TABLE_TODO + " (" + COLUMN_ID
 		      + " integer primary key autoincrement, " + COLUMN_NAME
 		      + " text not null, " + COLUMN_DESCRIPTION
-		      + " text, "+ COLUMN_FAELLIGKEIT
+		      + " real, "+ COLUMN_FAELLIGKEIT
 		      + " text not null, "+ COLUMN_ERLEDIGT
 		      + " integer, "+ COLUMN_FAVOURITE
 		      + " integer);";
 	
 	private static final String WHERE_IDENTIFY_ITEM = COLUMN_ID + "=?";
 	
-	private SQLiteDatabase db;
+	protected SQLiteDatabase db;
 	protected static final String logger = SQLiteTodoAccessor.class
 			.getName();
 	
 	private List<TodoModel> todos = new ArrayList<TodoModel>();
 	private ArrayAdapter<TodoModel> adapter;
-//	private SimpleCursorAdapter adapter;
-	private Cursor cursor;
-	
-//	public SQLiteTodoAccessor(Activity activity){
-//		this.activity = activity;
-//		prepareSQLiteDatabase();
-//		readOutTodosFromDatabase();
-//	}
 	
 
 	protected Activity getActivity() {
@@ -74,83 +69,71 @@ public class SQLiteTodoAccessor implements ITodoListAccessor {
 	@Override
 	public void addTodo(TodoModel todo) {
 		Log.i(logger, "TodoModel: "+todo);
-		addItemToDb(todo);
-		this.adapter.add(todo);
-//		updateCursor();
-
-		
-
+		addTodoToDb(todo);
+		this.adapter.add(todo);		
 	}
 
 	@Override
 	public ListAdapter getAdapter() {
-		// TODO andere Bestandteile
 		
 		prepareSQLiteDatabase();
 		readOutTodosFromDatabase();
 		
 
 		this.adapter = new ArrayAdapter<TodoModel>(getActivity(),
-				R.layout.todoall_item, this.todos) {
+				R.layout.item_in_listview, this.todos) {
+			
 			@Override
-			public View getView(int position, View listItemView,
+			public View getView(final int position, View listItemView,
 					ViewGroup parent) {
 				Log.i(logger,
 						"getView() has been invoked for item: "
 								+ todos.get(position) + ", listItemView is: "
 								+ listItemView);
 				View layout = getActivity().getLayoutInflater().inflate(
-						R.layout.todoall_item, null);
+						R.layout.item_in_listview, null);
 				
-				TextView todoName =(TextView)layout.findViewById(R.id.todoall_itemName);
+				TextView todoName =(TextView)layout.findViewById(R.id.itemName);
 				todoName.setText(todos.get(position).getName());
-				TextView todoFaelligkeit=(TextView)layout.findViewById(R.id.todoall_itemFaelligkeit);
-				todoFaelligkeit.setText(todos.get(position).getDate().toGMTString());
+				TextView todoFaelligkeit =(TextView)layout.findViewById(R.id.todoall_itemFaelligkeit);
+				todoFaelligkeit.setText(todos.get(position).getDate().toString());
+				CheckBox todoErledigt=(CheckBox)layout.findViewById(R.id.todoall_itemErledightcheckBox);
+				todoErledigt.setChecked(todos.get(position).getErledigt()==1);
+				todoErledigt.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+						todos.get(position).setErledigt(isChecked ? 1:0);
+						updateTodo(todos.get(position));
+						
+					}
+				});
+				
+				CheckBox todoWichtig=(CheckBox)layout.findViewById(R.id.todoall_itemWichtigcheckBox);
+				todoWichtig.setChecked(todos.get(position).getFavourite()==1);
+				todoWichtig.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+						todos.get(position).setFavourite(isChecked ? 1:0);
+						updateTodo(todos.get(position));
+						
+					}
+				});
 				return layout;
+				
 			}
 
 		};
 		this.adapter.setNotifyOnChange(true);
 
 		return this.adapter;
-		
-//		SQLiteQueryBuilder querybuilder = new SQLiteQueryBuilder();
-//		querybuilder.setTables(TABLE_TODO);
-//		String[] asColumsToReturn = { COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
-//				COLUMN_FAELLIGKEIT, COLUMN_ERLEDIGT,COLUMN_FAVOURITE };
-//		String ordering = COLUMN_ID + " ASC";
-//
-//		this.cursor = querybuilder.query(this.db, asColumsToReturn, null, null,
-//				null, null, ordering);
-//
-//		getActivity().startManagingCursor(this.cursor);
-
-		/*
-		 * create a cursor adapter that maps the "name" column in the db to the
-		 * itemName element in the view
-		 * 
-		 * (i.e. using this adapter there is no need to create DataItem objects
-		 * for all items that are contained in the db)
-		 */
-//		this.adapter = new SimpleCursorAdapter(getActivity(), R.layout.todoall_item,
-//				this.cursor,
-//				new String[] {COLUMN_NAME, COLUMN_DESCRIPTION,
-//			COLUMN_FAELLIGKEIT, COLUMN_ERLEDIGT,COLUMN_FAVOURITE },
-//				new int[] {R.id.nameEditText, R.id.beschreibung, R.id.datumpicker, R.id.erledigtCheckBox,R.id.wichtigkeitBar});
-//		this.adapter = new SimpleCursorAdapter(getActivity(), R.layout.todoall_item,
-//				this.cursor,
-//				new String[] {COLUMN_NAME, COLUMN_DESCRIPTION,
-//			COLUMN_FAELLIGKEIT, COLUMN_ERLEDIGT,COLUMN_FAVOURITE },
-//				new int[] {R.id.nameEditText, R.id.beschreibung, R.id.datumpicker, R.id.erledigtCheckBox,R.id.wichtigkeitBar});
-//
-//		return this.adapter;
 	}
 
 	@Override
 	public void updateTodo(TodoModel todo) {
-		updateItemInDb(todo);
+		updateTodoInDb(todo);
 		lookupItem(todo).updateFrom(todo);
-//		updateCursor();
 		this.adapter.notifyDataSetChanged();
 
 	}
@@ -158,29 +141,26 @@ public class SQLiteTodoAccessor implements ITodoListAccessor {
 	@Override
 	public void deleteTodo(TodoModel todo) {
 		removeTodoFromDb(todo);
-//		updateCursor();
 		this.adapter.remove(lookupItem(todo));
 	}
 
 	@Override
 	public TodoModel getTodo(int todoPosition, long todoId) {
 		return adapter.getItem(todoPosition);
-//		return createTodoFromCursor((Cursor) this.adapter.getItem(todoPosition));
-
 	}
 
 	@Override
 	public void finalise() {
 		this.db.close();
 		Log.i(logger, "db has been closed");
-
 	}
 	
 	private ContentValues createDBTodo(TodoModel todo) {
 		ContentValues values = new ContentValues();
 	    values.put(COLUMN_NAME, todo.getName());
 	    values.put(COLUMN_DESCRIPTION, todo.getDescription());
-	    values.put(COLUMN_FAELLIGKEIT, todo.getDate().toGMTString());
+//	    values.put(COLUMN_FAELLIGKEIT, todo.getDate().toGMTString());
+	    values.put(COLUMN_FAELLIGKEIT, todo.getDate().getTime());
 	    values.put(COLUMN_ERLEDIGT, todo.getErledigt());
 	    values.put(COLUMN_FAVOURITE, todo.getFavourite());
 	    return values;
@@ -230,7 +210,7 @@ public class SQLiteTodoAccessor implements ITodoListAccessor {
 		currentTodo.setId(c.getInt(c.getColumnIndex(COLUMN_ID)));
 		currentTodo.setName(c.getString(c.getColumnIndex(COLUMN_NAME)));
 		currentTodo.setDescription(c.getString(c.getColumnIndex(COLUMN_DESCRIPTION)));
-		currentTodo.setDate(new Date(c.getString(c.getColumnIndex(COLUMN_FAELLIGKEIT))));
+		currentTodo.setDate(new Date(c.getLong(c.getColumnIndex(COLUMN_FAELLIGKEIT))));
 		currentTodo.setErledigt(c.getInt(c.getColumnIndex(COLUMN_ERLEDIGT)));
 		currentTodo.setFavourite(c.getInt(c.getColumnIndex(COLUMN_FAVOURITE)));
 
@@ -238,12 +218,8 @@ public class SQLiteTodoAccessor implements ITodoListAccessor {
 		return currentTodo;
 	}
 	
-	protected void addItemToDb(TodoModel todo) {
+	protected void addTodoToDb(TodoModel todo) {
 		Log.i(logger, "addItemToDb(): " + todo);
-
-		/**
-		 * add the item to the db
-		 */
 		ContentValues insertTodo = createDBTodo(todo);
 		long todoId = this.db.insert(TABLE_TODO, null, insertTodo);
 		Log.i(logger, "addItemToDb(): got new item id after insertion: "
@@ -251,7 +227,7 @@ public class SQLiteTodoAccessor implements ITodoListAccessor {
 		todo.setId(todoId);
 	}
 	
-	protected void updateItemInDb(TodoModel todo) {
+	protected void updateTodoInDb(TodoModel todo) {
 		Log.i(logger, "updateItemInDb(): " + todo);
 		this.db.update(TABLE_TODO, createDBTodo(todo), WHERE_IDENTIFY_ITEM,
 				new String[] { String.valueOf(todo.getId()) });
@@ -259,8 +235,6 @@ public class SQLiteTodoAccessor implements ITodoListAccessor {
 	}
 	protected void removeTodoFromDb(TodoModel todo) {
 		Log.i(logger, "removeItemFromDb(): " + todo);
-
-		// we first delete the item
 		this.db.delete(TABLE_TODO, WHERE_IDENTIFY_ITEM,
 				new String[] { String.valueOf(todo.getId()) });
 		Log.i(logger, "removeItemFromDb(): deletion in db done");
@@ -268,12 +242,6 @@ public class SQLiteTodoAccessor implements ITodoListAccessor {
 	
 	public List<TodoModel> getTodos() {
 		return this.todos;
-	}
-	
-	private void updateCursor(){
-		if(cursor!=null){
-			cursor.requery();
-		}
 	}
 	
 	private TodoModel lookupItem(TodoModel todo) {

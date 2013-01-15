@@ -12,5 +12,6 @@
     <string name="todoerstellen">TODO Erstellen</string>
     <string name="emailFalsch">Es ist keine gültige Email-Adresse. Eine gültige Email-Adresse eingeben.</string>
     <string name="passwortFalsch">Passwort muss genau sechs Ziffern lang sein.</string>
+    <string name="wichtig">Wichtig</string>
 
 </resources>

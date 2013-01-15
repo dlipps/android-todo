@@ -3,12 +3,8 @@ package com.example.android_todo;
 import java.util.regex.Pattern;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -17,7 +13,6 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -42,6 +37,14 @@ public class LoginActivity extends Activity {
 		passwordEdit =(EditText)findViewById(R.id.passwordnumerischEdit);
 		passwordFalsch=(TextView)findViewById(R.id.passwordFalsch);
 		emailFalsch=(TextView)findViewById(R.id.emailFalsch);
+		emailEdit.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				emailFalsch.setVisibility(View.INVISIBLE);
+				
+			}
+		});
 		
 		emailEdit.setOnEditorActionListener(new OnEditorActionListener() {
 			
@@ -60,6 +63,15 @@ public class LoginActivity extends Activity {
 					return false;
 				}
 				return false;
+			}
+		});
+		
+		passwordEdit.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				passwordFalsch.setVisibility(View.INVISIBLE);
+				
 			}
 		});
 		

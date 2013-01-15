@@ -24,7 +24,7 @@ public class TodoDetailsActivity extends Activity {
 	private DatePicker todoFaelligkeitDatum;
 	private TimePicker todoZeit;
 	private CheckBox todoErledigt;
-	private RatingBar todoWichtigkeit;
+	private CheckBox todoWichtigkeit;
 	private Button todoSpeichern;
 	private Button todoLoeschen;
 	protected static final String logger = TodoDetailsActivity.class.getName();
@@ -44,30 +44,33 @@ public class TodoDetailsActivity extends Activity {
 		todoZeit=(TimePicker)findViewById(R.id.timePicker);
 		todoZeit.setIs24HourView(true);
 		todoErledigt=(CheckBox)findViewById(R.id.erledigtCheckBox);
-		todoWichtigkeit=(RatingBar)findViewById(R.id.wichtigkeitBar);
+		todoWichtigkeit=(CheckBox)findViewById(R.id.checkBoxWichtigkeit);
 		todoSpeichern=(Button)findViewById(R.id.buttonSave);
 		todoLoeschen=(Button)findViewById(R.id.buttonDelete);
 		
 		if (accessor.hasTodo()) {
-			// set name and description
 			TodoModel todo=accessor.readTodo();
 			todoName.setText(todo.getName());
 			todoDescription.setText(accessor.readTodo().getDescription());
-			todoFaelligkeitDatum.init(todo.getDate().getYear(), todo.getDate().getMonth(), todo.getDate().getDay(), null);
+//			Log.i(TodoDetailsActivity.class.getName(),"INITIALISIEREN!!! Jahr: " + todo.getDate().getYear()+"Monat: "+todo.getDate().getMonth());
+			todoFaelligkeitDatum.init(todo.getDate().getYear()+1900, todo.getDate().getMonth(), todo.getDate().getDate(), null);
 			todoZeit.setCurrentHour(todo.getDate().getHours());
 			todoZeit.setCurrentMinute(todo.getDate().getMinutes());
 			todoErledigt.setChecked(todo.getErledigt()==1);
-			todoWichtigkeit.setProgress(todo.getFavourite());
+			todoWichtigkeit.setChecked(todo.getFavourite()==1);
 		} else {
 			accessor.createTodo();
+			todoLoeschen.setEnabled(false);
 		}
 		
 		todoSpeichern.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				processTodoSpeichern(accessor,todoName,todoDescription,todoFaelligkeitDatum,todoZeit,todoErledigt,todoWichtigkeit);
-				
+				if(!todoName.getText().toString().equals("")){
+					processTodoSpeichern(accessor,todoName,todoDescription,todoFaelligkeitDatum,todoZeit,todoErledigt,todoWichtigkeit);
+				}
+				finish();
 			}
 		});
 		
@@ -93,16 +96,13 @@ public class TodoDetailsActivity extends Activity {
 	}
 	
 	protected void processTodoSpeichern(ITodoAccessor accessor, EditText name,
-			EditText description, DatePicker faelligkeitDatum, TimePicker zeit, CheckBox erledigt, RatingBar wichtigkeit) {
+			EditText description, DatePicker faelligkeitDatum, TimePicker zeit, CheckBox erledigt, CheckBox wichtigkeit) {
 		accessor.readTodo().setName(name.getText().toString());
 		accessor.readTodo().setDescription(description.getText().toString());
-		accessor.readTodo().setDate(new Date(faelligkeitDatum.getYear(),faelligkeitDatum.getMonth(),faelligkeitDatum.getDayOfMonth(),zeit.getCurrentHour(),zeit.getCurrentMinute()));
-		if(erledigt.isChecked()){
-			accessor.readTodo().setErledigt(1);
-		}else{
-			accessor.readTodo().setErledigt(0);
-		}
-		accessor.readTodo().setFavourite((int) wichtigkeit.getRating());
+//		Log.i(TodoDetailsActivity.class.getName(),"SPEIHCERH!!! Jahr: " + faelligkeitDatum.getYear()+"Monat: "+faelligkeitDatum.getMonth());
+		accessor.readTodo().setDate(new Date(faelligkeitDatum.getYear()-1900,faelligkeitDatum.getMonth(),faelligkeitDatum.getDayOfMonth(),zeit.getCurrentHour(),zeit.getCurrentMinute()));
+		accessor.readTodo().setErledigt(erledigt.isChecked() ? 1:0);
+		accessor.readTodo().setFavourite(wichtigkeit.isChecked() ? 1:0);
 		
 		accessor.writeTodo();
 

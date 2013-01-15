@@ -1,11 +1,7 @@
 package com.example.android_todo;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import com.example.accessor.ITodoListAccessor;
 import com.example.accessor.SQLiteTodoAccessor;
-import com.example.helper.TodoContentProvider;
 import com.example.model.TodoModel;
 
 import android.app.Activity;
@@ -15,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -23,7 +18,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class TodoAllActivity extends Activity {
 	
-	private Button todoErstellenButton;
+//	private Button todoErstellenButton;
 	private ListView listview;
 	private SQLiteTodoAccessor accessor;
 	public static final String ARG_TODO_OBJECT = "todoObject";
@@ -38,14 +33,14 @@ public class TodoAllActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.todoall);
-		todoErstellenButton = (Button)findViewById(R.id.todoallErstellenButton);				
+		setContentView(R.layout.itemlistview);
+						
 		try {
 			// access the listview
 			/*
 			 * access the list view for the options to be displayed
 			 */
-			listview = (ListView) findViewById(R.id.todoallListView);
+			listview = (ListView) findViewById(R.id.list);
 
 			// determine the accessor which shall be used
 			accessor = new SQLiteTodoAccessor();
@@ -71,12 +66,14 @@ public class TodoAllActivity extends Activity {
 				public void onItemClick(AdapterView<?> adapterView,
 						View itemView, int itemPosition, long itemId) {
 					Log.i(logger, "Click!!!!!!!!!!!!!");
+					
 					TodoModel todo = accessor.getTodo(itemPosition,itemId);
 					
 					processTodoSelection(todo);
 				}
 
 			});
+			Button todoErstellenButton = (Button)findViewById(R.id.newitemButton);
 
 			todoErstellenButton.setOnClickListener(new OnClickListener() {
 				

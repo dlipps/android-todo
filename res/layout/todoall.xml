@@ -4,15 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <ListView
-        android:id="@+id/todoallListView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/todoallErstellenButton"
-        android:clickable="true" >
-
-    </ListView>
+    <include layout="@layout/listviewtodo"/>
 
     <Button
         android:id="@+id/todoallErstellenButton"
@@ -27,7 +19,6 @@
         android:id="@+id/todoallFilterspinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/todoallListView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/todoallErstellenButton" />

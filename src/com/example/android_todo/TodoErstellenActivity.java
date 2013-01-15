@@ -69,7 +69,7 @@ public class TodoErstellenActivity extends Activity {
 		todoFaelligkeitDatum=(DatePicker)findViewById(R.id.datumpicker);
 		todoZeit=(TimePicker)findViewById(R.id.timePicker);
 		todoErledigt=(CheckBox)findViewById(R.id.erledigtCheckBox);
-		todoWichtigkeit=(RatingBar)findViewById(R.id.wichtigkeitBar);
+//		todoWichtigkeit=(RatingBar)findViewById(R.id.wichtigkeitBar);
 		todoSpeichern=(Button)findViewById(R.id.buttonSave);
 		todoLoeschen=(Button)findViewById(R.id.buttonDelete);
 		

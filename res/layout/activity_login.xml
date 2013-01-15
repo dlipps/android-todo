@@ -25,6 +25,7 @@
         android:layout_marginBottom="45dp"
         android:ems="10"
         android:inputType="textEmailAddress"
+        android:imeOptions="actionDone"
         android:singleLine="true" />
 
     <EditText
@@ -37,6 +38,7 @@
         android:inputType="number"
         android:maxLength="6"
         android:password="true"
+        android:imeOptions="actionDone"
         android:singleLine="true" />
 
     <TextView
