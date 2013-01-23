@@ -3,18 +3,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-   <include
-       android:layout_below="@+id/newitemButton"
-       layout="@layout/listview" />
-    
-    <!-- a button whose activation depends on the filling of other elements -->
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-    <Button
-        android:id="@+id/newitemButton"
-        android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/newItemButton"
+            style="@style/textStyleElement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/todoerstellen" />
+
+        <Spinner
+            android:id="@+id/filterSpinner"
+            style="@style/textStyleElement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/newItemButton" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/todoerstellen" />
+        android:layout_below="@+id/relativeLayout1" >
+
+        <include
+            android:layout_alignParentLeft="true"
+            layout="@layout/listview" />
+        
+    </RelativeLayout>
 
 </RelativeLayout>

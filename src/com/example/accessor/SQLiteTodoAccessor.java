@@ -11,6 +11,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.android_todo.R;
+import com.example.helper.TodoComparator;
 import com.example.model.TodoModel;
 
 public class SQLiteTodoAccessor implements ITodoListAccessor {
@@ -84,7 +86,7 @@ public class SQLiteTodoAccessor implements ITodoListAccessor {
 				R.layout.item_in_listview, this.todos) {
 			
 			@Override
-			public View getView(final int position, View listItemView,
+			public View getView(final int position, final View listItemView,
 					ViewGroup parent) {
 				Log.i(logger,
 						"getView() has been invoked for item: "
@@ -92,6 +94,11 @@ public class SQLiteTodoAccessor implements ITodoListAccessor {
 								+ listItemView);
 				View layout = getActivity().getLayoutInflater().inflate(
 						R.layout.item_in_listview, null);
+				
+				if(todos.get(position).getDate().getTime()<new Date().getTime()){
+					Log.i(logger,"Farbe ändern");
+					layout.setBackgroundColor(Color.RED);
+				}
 				
 				TextView todoName =(TextView)layout.findViewById(R.id.itemName);
 				todoName.setText(todos.get(position).getName());
@@ -104,6 +111,7 @@ public class SQLiteTodoAccessor implements ITodoListAccessor {
 					@Override
 					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 						todos.get(position).setErledigt(isChecked ? 1:0);
+						listItemView.refreshDrawableState();
 						updateTodo(todos.get(position));
 						
 					}
@@ -126,7 +134,7 @@ public class SQLiteTodoAccessor implements ITodoListAccessor {
 
 		};
 		this.adapter.setNotifyOnChange(true);
-
+//		this.adapter.sort(new TodoComparator(TodoComparator.SORT_TYPE_ERLEDIGT));
 		return this.adapter;
 	}
 

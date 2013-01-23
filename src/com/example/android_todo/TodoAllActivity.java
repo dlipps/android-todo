@@ -2,6 +2,7 @@ package com.example.android_todo;
 
 
 import com.example.accessor.SQLiteTodoAccessor;
+import com.example.helper.TodoComparator;
 import com.example.model.TodoModel;
 
 import android.app.Activity;
@@ -11,10 +12,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Spinner;
 
 public class TodoAllActivity extends Activity {
 	
@@ -55,9 +59,16 @@ public class TodoAllActivity extends Activity {
 			// item layout to be used
 			final ListAdapter adapter = accessor
 					.getAdapter();
+			
+			if(adapter instanceof ArrayAdapter){
+				((ArrayAdapter<TodoModel>) adapter).sort(new TodoComparator(TodoComparator.SORT_TYPE_ERLEDIGT));
+			}
+			
 
 			// set the adapter on the list view
 			listview.setAdapter(adapter);
+			
+			
 
 			// set a listener that reacts to the selection of an element
 			listview.setOnItemClickListener(new OnItemClickListener() {
@@ -73,7 +84,7 @@ public class TodoAllActivity extends Activity {
 				}
 
 			});
-			Button todoErstellenButton = (Button)findViewById(R.id.newitemButton);
+			Button todoErstellenButton = (Button)findViewById(R.id.newItemButton);
 
 			todoErstellenButton.setOnClickListener(new OnClickListener() {
 				
@@ -82,6 +93,39 @@ public class TodoAllActivity extends Activity {
 					processTodoNeuRequest();
 					
 				}
+			});
+			
+			Spinner spinner = (Spinner) findViewById(R.id.filterSpinner);
+			ArrayAdapter<CharSequence> adapterFilter = ArrayAdapter.createFromResource(this,
+			        R.array.Filter, android.R.layout.simple_spinner_item);
+			adapterFilter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			spinner.setAdapter(adapterFilter);
+			spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+				@Override
+				public void onItemSelected(AdapterView<?> arg0, View arg1,
+						int arg2, long arg3) {
+					if(adapter instanceof ArrayAdapter){
+						if(arg2==0){
+							((ArrayAdapter<TodoModel>) adapter).sort(new TodoComparator(TodoComparator.SORT_TYPE_ERLEDIGT));
+						}else if(arg2==1){
+							((ArrayAdapter<TodoModel>) adapter).sort(new TodoComparator(TodoComparator.SORT_TYPE_DATUM_WICHTIGKEIT));
+						}else if(arg2==2){
+							((ArrayAdapter<TodoModel>) adapter).sort(new TodoComparator(TodoComparator.SORT_TYPE_WICHTIGKEIT_DATUM));
+						}
+					}
+					
+				}
+
+				@Override
+				public void onNothingSelected(AdapterView<?> arg0) {
+					
+					if(adapter instanceof ArrayAdapter){
+						((ArrayAdapter<TodoModel>) adapter).sort(new TodoComparator(TodoComparator.SORT_TYPE_ERLEDIGT));
+					}
+					
+				}
+				
 			});
 			
 			// set the listview as scrollable
