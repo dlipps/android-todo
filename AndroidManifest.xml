@@ -7,6 +7,8 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="10" />
+    
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -22,9 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="TodoAllActivity"></activity>
-        <activity android:name="com.example.android_todo.TodoErstellenActivity"></activity>
         <activity android:name="TodoDetailsActivity"></activity>
+        <activity android:name="TodoListActivity"></activity>
     </application>
 
 </manifest>

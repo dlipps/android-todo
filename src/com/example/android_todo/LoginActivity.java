@@ -1,10 +1,20 @@
 package com.example.android_todo;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
+
+import com.example.helper.Login;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -12,17 +22,21 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 public class LoginActivity extends Activity {
 	
+	protected static final String logger = LoginActivity.class.getName();
+	
 	private Button loginButton;
 	private EditText emailEdit;
 	private EditText passwordEdit;
 	private TextView passwordFalsch;
 	private TextView emailFalsch;
+	private CheckBox lokalArb;
 	private String email=null;
 	private String password=null;
 //	private AlertDialog.Builder ad;
@@ -37,6 +51,7 @@ public class LoginActivity extends Activity {
 		passwordEdit =(EditText)findViewById(R.id.passwordnumerischEdit);
 		passwordFalsch=(TextView)findViewById(R.id.passwordFalsch);
 		emailFalsch=(TextView)findViewById(R.id.emailFalsch);
+		lokalArb=(CheckBox)findViewById(R.id.checkBoxLogin);
 		emailEdit.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -80,7 +95,7 @@ public class LoginActivity extends Activity {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 				passwordFalsch.setVisibility(View.INVISIBLE);
-				if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+				if (actionId == EditorInfo.IME_ACTION_DONE) {
 					String text=v.getText().toString();
 					if(text.length()==6){
 						password = text;
@@ -100,7 +115,54 @@ public class LoginActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 //				Log.i(TableLayout.class.getName(),"onClick(): " + v);
-				startActivity(new Intent(LoginActivity.this,TodoAllActivity.class));	
+				new AsyncTask<Void, Void, Boolean>() {
+					@Override
+					protected Boolean doInBackground(Void... todos) {
+						if(lokalArb.isChecked()){
+							return false;
+						}
+						try {
+							
+							URL url = new URL("http://10.0.2.2:8080/TodoWebapp/");
+							  HttpURLConnection con = (HttpURLConnection) url
+							    .openConnection();
+							  con.setConnectTimeout(100);
+							  if(con.getResponseCode()==200){
+								  Login lg = new Login();
+								  List<String> loginlist=new ArrayList<String>();
+								  loginlist.add(0, email);
+								  loginlist.add(1, password);
+								  boolean login =lg.login(loginlist);
+								  Log.i(logger,"do in background "+login+" "+email);
+								  return login;
+							  }else{
+								  return false;
+							  }
+							
+							  
+							  } catch (Exception e) {
+								 
+								  Log.i(logger,"Exeption: "+e.toString());
+								  return false;
+							  }						
+					}
+
+					@Override
+					protected void onPostExecute(Boolean connection) {
+						Intent intent = new Intent(LoginActivity.this,
+						TodoListActivity.class);
+						
+						if(connection){
+							intent.putExtra("connection",TodoListActivity.CONNECTION);
+							startActivity(intent);
+						}else{
+							startActivity(intent);							
+						}
+
+					}
+				}.execute();
+				
+//				startActivity(new Intent(LoginActivity.this,TodoListActivity.class));	
 			}
 		});
         

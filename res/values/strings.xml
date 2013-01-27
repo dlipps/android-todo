@@ -18,5 +18,6 @@
         <item >Datum/Wichtigkeit</item>
         <item >Wichtigkeit/Datum</item>
     </string-array>
+        <string name="lokallogin">Lokal arbeiten</string>
 
 </resources>

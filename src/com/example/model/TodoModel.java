@@ -95,6 +95,19 @@ public class TodoModel implements Serializable{
 		this.setFavourite(item.getFavourite());
 	}
 	
+	public boolean equals(Object other) {
+
+		// we cannot compare getClass() because classes do not coincide in case
+		// of delete, where we create an anonymous inner class that extends
+		// DataItem
+		if (other == null || !(other instanceof TodoModel)) {
+			return false;
+		} else {
+			return ((TodoModel) other).getId() == this.getId();
+		}
+
+	}
+	
 	public String toString() {
 		return "{TodoModel " + this.getId() + " " + this.getName() + "}";
 	}
