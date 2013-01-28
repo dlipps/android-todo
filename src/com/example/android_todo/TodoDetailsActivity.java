@@ -1,13 +1,8 @@
 package com.example.android_todo;
 
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import com.example.model.TodoModel;
 
@@ -22,6 +17,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -30,7 +27,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
+
 
 public class TodoDetailsActivity extends Activity {
 	
@@ -58,7 +55,7 @@ public class TodoDetailsActivity extends Activity {
 		setContentView(R.layout.tododetail);
 		
 		try{
-			
+
 			listview=(ListView)findViewById(R.id.listViewContacts);
 			contacts = new ArrayList<Uri>();
 			cr=getContentResolver();
@@ -96,7 +93,6 @@ public class TodoDetailsActivity extends Activity {
 			for(String s : todo.getContacts()){
 				contacts.add(Uri.parse(s));
 			}
-//			contacts.addAll(todo.getContacts());
 			
 			adapter=new ArrayAdapter<Uri>(this, R.id.listViewContacts,contacts){
 				
@@ -105,12 +101,11 @@ public class TodoDetailsActivity extends Activity {
 							ViewGroup parent) {
 						View layout = (ViewGroup)getLayoutInflater().inflate(
 								R.layout.item_in_contactlist, null);
-//						Log.i(logger, "Adapter: "+contacts.toString());
 						Cursor cursor = cr.query(contacts.get(position), new String[] { ContactsContract.Data.DISPLAY_NAME }, null, null, null);
 						cursor.moveToPosition(position);
 						TextView contactName =(TextView)layout.findViewById(R.id.textViewContact);
 						contactName.setText(cursor.getString(0));
-						
+						cursor.close();
 						Button contactDelete=(Button)layout.findViewById(R.id.buttonDeleteContact);
 						contactDelete.setOnClickListener(new OnClickListener() {
 							
@@ -131,6 +126,39 @@ public class TodoDetailsActivity extends Activity {
 			this.adapter.setNotifyOnChange(true);
 			listview.setAdapter(this.adapter);
 			listview.setScrollBarStyle(ListView.SCROLLBARS_INSIDE_OVERLAY);
+			listview.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View arg1,
+						int arg2, long arg3) {
+					
+					ArrayList<String> phone=new ArrayList<String>();
+					Cursor cursor = cr.query(contacts.get(arg2), new String[] { ContactsContract.Data.CONTACT_ID }, null, null, null);
+					cursor.moveToPosition(arg2);
+					
+					Cursor phones = cr.query(
+							ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+							ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = "
+									+ cursor.getString(0), null, null);
+
+					while (phones.moveToNext()) {
+						phone.add(phones
+								.getString(phones
+										.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+					}
+
+					phones.close();
+				    cursor.close();
+
+					Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+					smsIntent.setType("vnd.android-dir/mms-sms");
+					if(!phone.isEmpty()){
+						smsIntent.putExtra("address", phone.get(0));
+					}
+					smsIntent.putExtra("sms_body",todo.getName()+". "+todo.getDescription());
+					startActivity(smsIntent);
+				}
+			});
 			
 			addContact.setOnClickListener(new OnClickListener() {
 				
@@ -184,13 +212,14 @@ public class TodoDetailsActivity extends Activity {
 		todo.setDate(new Date(todoFaelligkeitDatum.getYear()-1900,todoFaelligkeitDatum.getMonth(),todoFaelligkeitDatum.getDayOfMonth(),todoZeit.getCurrentHour(),todoZeit.getCurrentMinute()));
 		todo.setErledigt(todoErledigt.isChecked() ? 1:0);
 		todo.setFavourite(todoWichtigkeit.isChecked() ? 1:0);
+		ArrayList<String> test = new ArrayList<String>();
 		for(Uri uri:contacts){
-			todo.addContact(uri.toString());
+			test.add(uri.toString());
 		}
+		todo.addContactList(test);
 		Intent returnIntent = new Intent();
 		returnIntent.putExtra(TodoListActivity.ARG_TODO_OBJECT, this.todo);
 		setResult(TodoListActivity.RESPONSE_TODO_EDITED, returnIntent);
-		Log.i(logger,"TodoDetailsActivity: "+todo.getContacts().toString());
 		finish();
 	}
 

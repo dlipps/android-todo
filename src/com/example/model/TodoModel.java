@@ -96,6 +96,11 @@ public class TodoModel implements Serializable{
 		}
 	}
 	
+	public void addContactList(ArrayList<String> contacts){
+		this.contacts.clear();
+		this.contacts.addAll(contacts);
+	}
+	
 	public void deleteContact(String contact){
 		contacts.remove(contact);
 	}
