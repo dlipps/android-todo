@@ -233,11 +233,13 @@ public class TodoDetailsActivity extends Activity {
 	}
 	
 	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-		ContentResolver cr = getContentResolver();
-		Uri dataUri = Uri.withAppendedPath(ContactsContract.Contacts.lookupContact(cr, data.getData()), ContactsContract.Contacts.Data.CONTENT_DIRECTORY);
-		if(!contacts.contains(dataUri)){
-			contacts.add(dataUri);
-			adapter.notifyDataSetChanged();
+		if(resultCode==Activity.RESULT_OK){
+			ContentResolver cr = getContentResolver();
+			Uri dataUri = Uri.withAppendedPath(ContactsContract.Contacts.lookupContact(cr, data.getData()), ContactsContract.Contacts.Data.CONTENT_DIRECTORY);
+			if(!contacts.contains(dataUri)){
+				contacts.add(dataUri);
+				adapter.notifyDataSetChanged();
+			}
 		}
 	}
 
