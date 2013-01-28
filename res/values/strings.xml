@@ -21,5 +21,7 @@
         <string name="lokallogin">Lokal arbeiten</string>
         <string name="loginFalsch">Falsche Login-Daten! Versuchen sie es noch ein Mal!</string>
         <string name="addContact">Kontakt hinzufügen...</string>
+        <string name="emailHint">Email-Adresse eingeben...</string>
+        <string name="passHint">Passwort eingeben...</string>
 
 </resources>

@@ -69,16 +69,6 @@
         android:textSize="12sp"
         android:text="@string/wichtig" />
 
-    <Button
-        android:id="@+id/buttonDelete"
-        style="@style/textStyleElement"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/beschreibung"
-        android:layout_marginTop="56dp"
-        android:text="@string/buttonDelete" />
-
     <ListView
         android:id="@+id/listViewContacts"
         android:layout_width="match_parent"
@@ -97,5 +87,14 @@
         android:layout_alignTop="@+id/buttonSave"
         android:layout_centerHorizontal="true"
         android:text="@string/addContact" />
+
+    <Button
+        android:id="@+id/buttonDelete"
+        style="@style/textStyleElement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/buttonDelete" />
 
 </RelativeLayout>

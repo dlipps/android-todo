@@ -26,6 +26,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/emailFalsch"
         android:ems="10"
+        android:hint="@string/emailHint"
         android:imeOptions="actionDone"
         android:inputType="textEmailAddress"
         android:singleLine="true" >
@@ -53,6 +54,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/passwordFalsch"
         android:ems="10"
+        android:hint="@string/passHint"
         android:imeOptions="actionDone"
         android:inputType="number"
         android:maxLength="6"
