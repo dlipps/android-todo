@@ -70,11 +70,7 @@ public class TodoListActivity extends Activity {
 				Toast.makeText(this, "Keine Verbindung mit dem Server!", Toast.LENGTH_LONG).show();
 				accessor = new SQLiteTodoCRUDAccessor(this);
 			}
-
-			// determine the accessor which shall be used
-//			accessor = new ResteasyTodoCRUDAccessor("http://10.0.2.2:8080/TodoWebapp/todo");
-//			accessor = new SQLiteTodoCRUDAccessor(this);
-			
+		
 			this.todolist=new ArrayList<TodoModel>();
 			this.adapter = new ArrayAdapter<TodoModel>(this,
 					R.layout.item_in_listview, todolist) {
@@ -133,24 +129,10 @@ public class TodoListActivity extends Activity {
 			// set the adapter on the list view
 			listview.setAdapter(this.adapter);
 			Log.i(logger, "will use accessor: " + accessor);
-			// if we have an ActivityDataAccessor, we pass ourselves
-
-
-			// set the title of the activity given the accessor class
-
-			// obtain the adapter from the accessor, passing it the id of the
-			// item layout to be used
-
-			
-
 			adapter.sort(new TodoComparator(TodoComparator.SORT_TYPE_ERLEDIGT));
-
-			
 
 			// set the adapter on the list view
 			listview.setAdapter(adapter);
-			
-			
 
 			// set a listener that reacts to the selection of an element
 			listview.setOnItemClickListener(new OnItemClickListener() {
@@ -209,7 +191,6 @@ public class TodoListActivity extends Activity {
 			new AsyncTask<Void, Void, List<TodoModel>>() {
 				@Override
 				protected List<TodoModel> doInBackground(Void... todos) {
-//					return accessor.getTodos();
 					if(accessor instanceof SQLiteTodoCRUDAccessor){
 						return accessor.getTodos();
 					}else{
@@ -260,10 +241,6 @@ public class TodoListActivity extends Activity {
 		Log.i(logger, "processNewItemRequest()");
 		Intent intent = new Intent(TodoListActivity.this,
 				TodoDetailsActivity.class);
-		// we only specify the accessor class
-//		intent.putExtra(DataAccessActivity.ARG_ACCESSOR_CLASS,
-//				IntentDataItemAccessorImpl.class.getName());
-
 		// start the details activity with the intent
 		startActivityForResult(intent, REQUEST_TODO_CREATION);
 	}
@@ -275,10 +252,6 @@ public class TodoListActivity extends Activity {
 				TodoDetailsActivity.class);
 		// pass the item to the intent
 		intent.putExtra(ARG_TODO_OBJECT, todo);
-		// also specify the accessor class
-//		intent.putExtra(DataAccessActivity.ARG_ACCESSOR_CLASS,
-//				IntentDataItemAccessorImpl.class.getName());
-
 		// start the details activity with the intent
 		startActivityForResult(intent, REQUEST_TODO_DETAILS);
 	}
@@ -314,6 +287,7 @@ public class TodoListActivity extends Activity {
 				@Override
 				protected void onPostExecute(TodoModel todo) {
 					if (todo != null) {
+						Log.i(logger,"TodoDetailsActivity: "+todo.getContacts().toString());
 						adapter.add(todo);
 					}
 				}
@@ -335,11 +309,10 @@ public class TodoListActivity extends Activity {
 					@Override
 					protected void onPostExecute(TodoModel todo) {
 						if (todo != null) {
+							Log.i(logger,"TodoDetailsActivity: "+todo.getContacts().toString());
 							// read out the item from the list and update it
 							todolist.get(todolist.indexOf(todo)).updateFrom(
 									todo);
-//							todolist.get(adapter.getPosition(todo)).updateFrom(
-//									todo);
 							// notify the adapter that the item has been changed
 							adapter.notifyDataSetChanged();
 						}

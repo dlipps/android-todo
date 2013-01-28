@@ -1,6 +1,7 @@
 package com.example.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -14,6 +15,7 @@ public class TodoModel implements Serializable{
 	 * some static id assignment
 	 */
 	private static int ID = 0;
+	private ArrayList<String> contacts;
 
 	/**
 	 * the fields
@@ -33,10 +35,11 @@ public class TodoModel implements Serializable{
 		this.setDate(date);
 		this.setErledigt(erledigt);
 		this.setFavourite(favourite);
+		contacts=new ArrayList<String>();
 	}
 	
 	public TodoModel() {
-
+		contacts=new ArrayList<String>();
 	}
 
 	public String getName() {
@@ -87,12 +90,34 @@ public class TodoModel implements Serializable{
 		this.favourite = favourite;
 	}
 	
-	public void updateFrom(TodoModel item) {
-		this.setName(item.getName());
-		this.setDescription(item.getDescription());
-		this.setDate(item.getDate());
-		this.setErledigt(item.getErledigt());
-		this.setFavourite(item.getFavourite());
+	public void addContact(String contact){
+		if(!contacts.contains(contact)){
+			contacts.add(contact);
+		}
+	}
+	
+	public void deleteContact(String contact){
+		contacts.remove(contact);
+	}
+	
+	public ArrayList<String> getContacts(){
+		return contacts;
+	}
+	
+	public TodoModel updateFrom(TodoModel todo) {
+		this.setName(todo.getName());
+		this.setDescription(todo.getDescription());
+		this.setDate(todo.getDate());
+		this.setErledigt(todo.getErledigt());
+		this.setFavourite(todo.getFavourite());
+		contacts=todo.getContacts();
+		if(!this.getContacts().containsAll(contacts)){
+			for(String s : contacts){
+				this.addContact(s);
+			}
+			
+		}
+		return this;
 	}
 	
 	public boolean equals(Object other) {

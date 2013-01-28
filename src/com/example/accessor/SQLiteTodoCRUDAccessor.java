@@ -1,9 +1,15 @@
 package com.example.accessor;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -27,6 +33,7 @@ public class SQLiteTodoCRUDAccessor implements ITodoCRUDAccessor {
 	public static final String COLUMN_FAELLIGKEIT = "faelligkeit";
 	public static final String COLUMN_ERLEDIGT = "erledigt";
 	public static final String COLUMN_FAVOURITE = "favourite";
+	public static final String COLUMN_CONTACTS = "contact";
 	
 	private static final String DATABASE_CREATE = "create table "
 		      + TABLE_TODO + " (" + COLUMN_ID
@@ -35,7 +42,7 @@ public class SQLiteTodoCRUDAccessor implements ITodoCRUDAccessor {
 		      + " real, "+ COLUMN_FAELLIGKEIT
 		      + " text not null, "+ COLUMN_ERLEDIGT
 		      + " integer, "+ COLUMN_FAVOURITE
-		      + " integer);";
+		      + " integer, "+COLUMN_CONTACTS+" text);";
 	
 	private static final String WHERE_IDENTIFY_ITEM = COLUMN_ID + "=?";
 	
@@ -98,6 +105,7 @@ public class SQLiteTodoCRUDAccessor implements ITodoCRUDAccessor {
 				new String[] { String.valueOf(todo.getId()) });
 		Log.i(logger, "updateItemInDb(): update has been carried out");
 	}
+	
 	protected void removeTodoFromDb(long todoId) {
 //		Log.i(logger, "removeItemFromDb(): " + todo);
 		this.db.delete(TABLE_TODO, WHERE_IDENTIFY_ITEM,
@@ -112,6 +120,13 @@ public class SQLiteTodoCRUDAccessor implements ITodoCRUDAccessor {
 	    values.put(COLUMN_FAELLIGKEIT, todo.getDate().getTime());
 	    values.put(COLUMN_ERLEDIGT, todo.getErledigt());
 	    values.put(COLUMN_FAVOURITE, todo.getFavourite());
+	    String contact = serialize(todo.getContacts());
+	    if(contact!=null){
+	    	values.put(COLUMN_CONTACTS, contact);
+	    }
+
+	    
+
 	    return values;
 	}
 	
@@ -137,7 +152,7 @@ public class SQLiteTodoCRUDAccessor implements ITodoCRUDAccessor {
 		SQLiteQueryBuilder querybuilder = new SQLiteQueryBuilder();
 		querybuilder.setTables(TABLE_TODO);
 		String[] asColumsToReturn = { COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
-				COLUMN_FAELLIGKEIT, COLUMN_ERLEDIGT,COLUMN_FAVOURITE };
+				COLUMN_FAELLIGKEIT, COLUMN_ERLEDIGT,COLUMN_FAVOURITE, COLUMN_CONTACTS };
 		String ordering = COLUMN_ID + " ASC";
 
 		Cursor c = querybuilder.query(this.db, asColumsToReturn, null, null,
@@ -162,6 +177,16 @@ public class SQLiteTodoCRUDAccessor implements ITodoCRUDAccessor {
 		currentTodo.setDate(new Date(c.getLong(c.getColumnIndex(COLUMN_FAELLIGKEIT))));
 		currentTodo.setErledigt(c.getInt(c.getColumnIndex(COLUMN_ERLEDIGT)));
 		currentTodo.setFavourite(c.getInt(c.getColumnIndex(COLUMN_FAVOURITE)));
+		ArrayList<String> contact = deserialize(c.getString(c.getColumnIndex(COLUMN_CONTACTS)));
+		if(contact!=null){
+			if(!contact.isEmpty()){
+				for(String s : contact){
+					currentTodo.addContact(s);
+				}
+				
+			}
+		}
+
 		return currentTodo;
 	}
 	
@@ -177,6 +202,42 @@ public class SQLiteTodoCRUDAccessor implements ITodoCRUDAccessor {
 	public void finalise() {
 		this.db.close();
 		Log.i(logger, "db has been closed");
+	}
+	
+	private String serialize(ArrayList<String> contacts){
+	    ObjectMapper om = new ObjectMapper();
+	    try {
+	    	return om.writeValueAsString(contacts);
+			
+		} catch (JsonGenerationException e) {
+			Log.e(logger,e.toString());
+			return null;
+		} catch (JsonMappingException e) {
+			Log.e(logger,e.toString());
+			return null;
+		} catch (IOException e) {
+			Log.e(logger,e.toString());
+			return null;
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private ArrayList<String> deserialize(String contacts){
+		ObjectMapper om = new ObjectMapper();
+		
+		try {
+			return om.readValue(contacts, ArrayList.class);
+		} catch (JsonParseException e) {
+			Log.e(logger,e.toString());
+			return null;
+		} catch (JsonMappingException e) {
+			Log.e(logger,e.toString());
+			return null;
+		} catch (IOException e) {
+			Log.e(logger,e.toString());
+			return null;
+		}
+	
 	}
 
 }
