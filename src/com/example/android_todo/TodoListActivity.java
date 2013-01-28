@@ -204,7 +204,7 @@ public class TodoListActivity extends Activity {
 								accessor.addTodo(todo);
 							}
 							sqaccessor.finalise();
-							return todosql;
+							return accessor.getTodos();
 							
 						}else{
 
@@ -216,7 +216,7 @@ public class TodoListActivity extends Activity {
 							}
 							
 							sqaccessor.finalise();
-							return todorest;
+							return accessor.getTodos();
 						}
 						
 					}
@@ -288,7 +288,9 @@ public class TodoListActivity extends Activity {
 				protected void onPostExecute(TodoModel todo) {
 					if (todo != null) {
 						Log.i(logger,"TodoDetailsActivity: "+todo.getContacts().toString());
-						adapter.add(todo);
+						todolist.add(todo);
+						adapter.notifyDataSetChanged();
+//						adapter.add(todo);
 					}
 				}
 			}.execute(todo);
@@ -335,7 +337,9 @@ public class TodoListActivity extends Activity {
 					@Override
 					protected void onPostExecute(TodoModel todo) {
 						if (todo != null) {
-							adapter.remove(todo);
+							todolist.remove(todo);
+							adapter.notifyDataSetChanged();
+//							adapter.remove(todo);
 						}
 					}
 				}.execute(todo);
