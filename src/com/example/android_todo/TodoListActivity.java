@@ -67,7 +67,7 @@ public class TodoListActivity extends Activity {
 				Log.i(logger,"Accessor REST ");
 				accessor = new ResteasyTodoCRUDAccessor("http://10.0.2.2:8080/TodoWebapp/");
 			}else{
-				Toast.makeText(this, "Der Server ist nicht erreichbar", Toast.LENGTH_LONG).show();
+				Toast.makeText(this, "Keine Verbindung mit dem Server!", Toast.LENGTH_LONG).show();
 				accessor = new SQLiteTodoCRUDAccessor(this);
 			}
 

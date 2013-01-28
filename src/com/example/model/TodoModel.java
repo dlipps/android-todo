@@ -36,7 +36,7 @@ public class TodoModel implements Serializable{
 	}
 	
 	public TodoModel() {
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public String getName() {

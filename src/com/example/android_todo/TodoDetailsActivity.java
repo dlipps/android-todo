@@ -27,7 +27,6 @@ public class TodoDetailsActivity extends Activity {
 	private Button todoSpeichern;
 	private Button todoLoeschen;
 	protected static final String logger = TodoDetailsActivity.class.getName();
-//	private IntentTodoAccessor accessor;
 	private TodoModel todo;
 	
 	@Override
@@ -36,9 +35,7 @@ public class TodoDetailsActivity extends Activity {
 		setContentView(R.layout.tododetail);
 		
 		try{
-//			accessor=new IntentTodoAccessor();
-//			accessor.setActivity(this);
-			
+
 			todoName=(EditText)findViewById(R.id.nameEditText);
 			todoDescription=(EditText)findViewById(R.id.beschreibung);
 			todoFaelligkeitDatum=(DatePicker)findViewById(R.id.datumpicker);
@@ -52,19 +49,19 @@ public class TodoDetailsActivity extends Activity {
 			this.todo = (TodoModel) getIntent().getSerializableExtra(
 					TodoListActivity.ARG_TODO_OBJECT);
 			
-//			if (accessor.hasTodo()) {
+
 			if (this.todo!=null) {
-//				TodoModel todo=accessor.readTodo();
+
 				todoName.setText(todo.getName());
 				todoDescription.setText(todo.getDescription());
-	//			Log.i(TodoDetailsActivity.class.getName(),"INITIALISIEREN!!! Jahr: " + todo.getDate().getYear()+"Monat: "+todo.getDate().getMonth());
 				todoFaelligkeitDatum.init(todo.getDate().getYear()+1900, todo.getDate().getMonth(), todo.getDate().getDate(), null);
 				todoZeit.setCurrentHour(todo.getDate().getHours());
 				todoZeit.setCurrentMinute(todo.getDate().getMinutes());
 				todoErledigt.setChecked(todo.getErledigt()==1);
 				todoWichtigkeit.setChecked(todo.getFavourite()==1);
+				
 			} else {
-//				accessor.createTodo();
+				
 				this.todo = new TodoModel(-1, "", "", new Date(),0,0);
 				todoLoeschen.setEnabled(false);
 			}
@@ -76,6 +73,7 @@ public class TodoDetailsActivity extends Activity {
 					if(!todoName.getText().toString().equals("")){
 						processTodoSpeichern();
 					}
+					
 					finish();
 				}
 			});
@@ -93,8 +91,6 @@ public class TodoDetailsActivity extends Activity {
 		}catch (Exception e) {
 			String err = "got exception: " + e;
 			Log.e(logger, err, e);
-//			((DataAccessApplication) getApplication())
-//			.reportError(this, err);
 		}
 		
 		
@@ -104,17 +100,12 @@ public class TodoDetailsActivity extends Activity {
 	protected void processTodoSpeichern() {
 		todo.setName(todoName.getText().toString());
 		todo.setDescription(todoDescription.getText().toString());
-//		Log.i(TodoDetailsActivity.class.getName(),"SPEIHCERH!!! Jahr: " + faelligkeitDatum.getYear()+"Monat: "+faelligkeitDatum.getMonth());
 		todo.setDate(new Date(todoFaelligkeitDatum.getYear()-1900,todoFaelligkeitDatum.getMonth(),todoFaelligkeitDatum.getDayOfMonth(),todoZeit.getCurrentHour(),todoZeit.getCurrentMinute()));
 		todo.setErledigt(todoErledigt.isChecked() ? 1:0);
 		todo.setFavourite(todoWichtigkeit.isChecked() ? 1:0);
 		
 		Intent returnIntent = new Intent();
-
-		// set the item on the intent
 		returnIntent.putExtra(TodoListActivity.ARG_TODO_OBJECT, this.todo);
-
-		// set the result code
 		setResult(TodoListActivity.RESPONSE_TODO_EDITED, returnIntent);
 
 		finish();
@@ -123,11 +114,7 @@ public class TodoDetailsActivity extends Activity {
 	protected void processTodoLoeschen() {
 
 		Intent returnIntent = new Intent();
-
-		// set the item
 		returnIntent.putExtra(TodoListActivity.ARG_TODO_OBJECT, this.todo);
-
-		// set the result code
 		setResult(TodoListActivity.RESPONSE_TODO_DELETED, returnIntent);
 
 		finish();

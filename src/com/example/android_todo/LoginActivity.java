@@ -1,8 +1,6 @@
 package com.example.android_todo;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.InetAddress;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -31,11 +30,17 @@ public class LoginActivity extends Activity {
 	
 	protected static final String logger = LoginActivity.class.getName();
 	
+	private static int LOKAL_ARBEITEN=0;
+	private static int LOGIN_FALSCH=-1;
+	private static int LOGIN_RICHTIG=1;
+	private static int KEINE_VERBINDUNG=0;
+	
 	private Button loginButton;
 	private EditText emailEdit;
 	private EditText passwordEdit;
 	private TextView passwordFalsch;
 	private TextView emailFalsch;
+	private TextView loginFalsch;
 	private CheckBox lokalArb;
 	private String email=null;
 	private String password=null;
@@ -51,21 +56,32 @@ public class LoginActivity extends Activity {
 		passwordEdit =(EditText)findViewById(R.id.passwordnumerischEdit);
 		passwordFalsch=(TextView)findViewById(R.id.passwordFalsch);
 		emailFalsch=(TextView)findViewById(R.id.emailFalsch);
+		loginFalsch=(TextView)findViewById(R.id.loginFalsch);
 		lokalArb=(CheckBox)findViewById(R.id.checkBoxLogin);
+		
+		emailEdit.setOnFocusChangeListener(new OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				loginFalsch.setVisibility(View.INVISIBLE);
+				emailFalsch.setVisibility(View.INVISIBLE);
+			}
+		});
+		
 		emailEdit.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				emailFalsch.setVisibility(View.INVISIBLE);
+				loginFalsch.setVisibility(View.INVISIBLE);
 				
 			}
 		});
-		
+
 		emailEdit.setOnEditorActionListener(new OnEditorActionListener() {
 			
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-				emailFalsch.setVisibility(View.INVISIBLE);
 				if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
 					String text=v.getText().toString();
 					if(validateEmail(text)){
@@ -81,11 +97,21 @@ public class LoginActivity extends Activity {
 			}
 		});
 		
+		passwordEdit.setOnFocusChangeListener(new OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				loginFalsch.setVisibility(View.INVISIBLE);
+				passwordFalsch.setVisibility(View.INVISIBLE);
+			}
+		});
+		
 		passwordEdit.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				passwordFalsch.setVisibility(View.INVISIBLE);
+				loginFalsch.setVisibility(View.INVISIBLE);
 				
 			}
 		});
@@ -94,7 +120,6 @@ public class LoginActivity extends Activity {
 			
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-				passwordFalsch.setVisibility(View.INVISIBLE);
 				if (actionId == EditorInfo.IME_ACTION_DONE) {
 					String text=v.getText().toString();
 					if(text.length()==6){
@@ -114,12 +139,12 @@ public class LoginActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-//				Log.i(TableLayout.class.getName(),"onClick(): " + v);
-				new AsyncTask<Void, Void, Boolean>() {
+
+				new AsyncTask<Void, Void, Integer>() {
 					@Override
-					protected Boolean doInBackground(Void... todos) {
+					protected Integer doInBackground(Void... todos) {
 						if(lokalArb.isChecked()){
-							return false;
+							return LOKAL_ARBEITEN;
 						}
 						try {
 							
@@ -132,31 +157,35 @@ public class LoginActivity extends Activity {
 								  List<String> loginlist=new ArrayList<String>();
 								  loginlist.add(0, email);
 								  loginlist.add(1, password);
-								  boolean login =lg.login(loginlist);
-								  Log.i(logger,"do in background "+login+" "+email);
-								  return login;
+								  if(lg.login(loginlist)){
+									  return LOGIN_RICHTIG;
+								  }else{
+									  return LOGIN_FALSCH;
+								  }
 							  }else{
-								  return false;
+								  return KEINE_VERBINDUNG;
 							  }
 							
 							  
 							  } catch (Exception e) {
 								 
 								  Log.i(logger,"Exeption: "+e.toString());
-								  return false;
+								  return KEINE_VERBINDUNG;
 							  }						
 					}
 
 					@Override
-					protected void onPostExecute(Boolean connection) {
+					protected void onPostExecute(Integer connection) {
 						Intent intent = new Intent(LoginActivity.this,
 						TodoListActivity.class);
 						
-						if(connection){
+						if(connection==LOGIN_RICHTIG){
 							intent.putExtra("connection",TodoListActivity.CONNECTION);
 							startActivity(intent);
-						}else{
+						}else if(connection==LOKAL_ARBEITEN || connection==KEINE_VERBINDUNG){
 							startActivity(intent);							
+						}else if(connection==LOGIN_FALSCH){
+							loginFalsch.setVisibility(View.VISIBLE);
 						}
 
 					}

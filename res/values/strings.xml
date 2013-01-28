@@ -19,5 +19,6 @@
         <item >Wichtigkeit/Datum</item>
     </string-array>
         <string name="lokallogin">Lokal arbeiten</string>
+        <string name="loginFalsch">Falsche Login-Daten! Versuchen sie es noch ein Mal!</string>
 
 </resources>

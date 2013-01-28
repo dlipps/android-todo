@@ -2,7 +2,6 @@ package com.example.accessor;
 
 import java.util.List;
 
-import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 

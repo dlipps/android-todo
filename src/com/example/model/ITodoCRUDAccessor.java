@@ -11,10 +11,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import android.app.Activity;
-import android.widget.ListAdapter;
-
-
 @Path("/todo")
 @Consumes({ "application/json" })
 @Produces({ "application/json" })

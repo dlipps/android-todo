@@ -76,4 +76,18 @@
         android:enabled="false"
         android:text="@string/einloggen" />
 
+    <TextView
+        android:id="@+id/loginFalsch"
+        style="@style/textStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/emailFalsch"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="35dp"
+        android:text="@string/loginFalsch"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="12sp"
+        android:visibility="invisible" />
+
 </RelativeLayout>
